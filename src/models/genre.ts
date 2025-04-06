@@ -5,8 +5,16 @@ import type { Movie } from "./movie";
 
 export interface Genre {
 
-    genreId: number;
-    name: string;
+    genreId: string;
+    title: string;
     movies: Movie[];
 
+}
+
+export function createDefaultGenre(): Genre {
+    return {
+        genreId: "",
+        title: "",
+        movies: []
+    };
 }

@@ -1,31 +1,34 @@
+import type { LoginRequest } from './../../models/loginRequest';
 import type { User } from "@/models/user";
-import { myApi } from "../myApi";
+import { myApi } from "../apiBase";
 
 
 
 const url = '/user';
-export default {
+export const UserRepository = {
 
-    get() {
+    get: () => {
         return myApi.get<User[]>(url);
     },
 
-    getUser(userId: string) {
+    getUser: (userId: string) => {
         return myApi.get<User>(`${url}/${userId}`);
     },
 
-    post(user: User) {
+    post: (user: User) => {
         return myApi.post<User>(url, user);
     },
 
-    put(user: User) {
+    put: (user: User) => {
         return myApi.put<User>(`${url}/${user.userId}`, user);
     },
 
-    delete(userId: string) {
+    delete: (userId: string) => {
         return myApi.delete<User>(`${url}/${userId}`);
     },
 
+    login: (loginRequest: LoginRequest) => {
+        return myApi.post<User>(`${url}/login`, loginRequest);
+    }
 
-
-}
+};

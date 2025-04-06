@@ -53,7 +53,12 @@ export default defineConfig({
       },
     }),
   ],
-  define: { 'process.env': {} },
+  define: {
+    global: 'window',
+    'process.env': {
+    
+      
+  } },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

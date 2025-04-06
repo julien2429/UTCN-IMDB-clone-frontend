@@ -1,6 +1,6 @@
 <template>
   <v-sheet border rounded>
-    <v-data-table :headers="headers" :items="users">
+    <v-data-table :headers="headers" :items="genres">
       <template #top>
         <v-toolbar flat>
           <v-toolbar-title>
@@ -17,7 +17,7 @@
             class="me-2"
             prepend-icon="mdi-plus"
             rounded="lg"
-            text="Add a User"
+            text="Add a Genre"
             border
             @click="add"
           />
@@ -30,13 +30,13 @@
             color="medium-emphasis"
             icon="mdi-pencil"
             size="small"
-            @click="edit(item.userId)"
+            @click="edit(item.genreId)"
           />
           <v-icon
             color="medium-emphasis"
             icon="mdi-delete"
             size="small"
-            @click="remove(item.userId)"
+            @click="remove(item.genreId)"
           />
         </div>
       </template>
@@ -56,26 +56,13 @@
 
   <v-dialog v-model="dialog" max-width="500">
     <v-card
-      :subtitle="isEditing ? 'Update User' : 'Create User'"
-      :title="isEditing ? 'Edit User' : 'Add User'"
+      :subtitle="isEditing ? 'Update Genre' : 'Create Genre'"
+      :title="isEditing ? 'Edit Genre' : 'Add Genre'"
     >
       <template #text>
         <v-row>
           <v-col cols="12" md="6">
-            <v-text-field v-model="record.email" label="Email" />
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="record.username" label="Username" />
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="record.password" label="Password" />
-          </v-col>
-          <v-col cols="12" md="6">
-            <VSelect
-              v-model="record.role"
-              :items="availableRoles"
-              label="Role"
-            />
+            <v-text-field v-model="record.title" label="Title" />
           </v-col>
         </v-row>
       </template>
@@ -109,71 +96,57 @@
 <script setup lang="ts">
 import { ref, shallowRef, onMounted } from "vue";
 import RepositoryFactory from "@/api/RepositoryFactory";
-import { UserRole } from "@/enums/UserRole";
-import { createDefaultUser } from "@/models/user";
-import type { User } from "@/models/user";
-import { VSelect } from "vuetify/components";
-import type { UserRepository } from "@/api/Repositories/usersRepository";
+import { createDefaultGenre, type Genre } from "@/models/genre";
+import type { GenreRepository } from "@/api/Repositories/genreRepository";
 
 const alert = ref(false);
 const displayErrorsText = ref<string[]>([]);
-const users = ref<User[]>([]);
-const record = ref<User>(createDefaultUser());
+const genres = ref<Genre[]>([]);
+const record = ref<Genre>(createDefaultGenre());
 const dialog = shallowRef(false);
 const isEditing = shallowRef(false);
-const availableRoles = [
-  UserRole.UNKNOWN,
-  UserRole.ADMIN,
-  UserRole.NORMAL,
-  UserRole.REVIEWER,
-];
 
-const userRep = RepositoryFactory.get("user") as typeof UserRepository;
+const genreRep = RepositoryFactory.get("genre") as typeof GenreRepository;
 
 const headers = [
-  { title: "User ID", value: "userId" },
-  { title: "Email", value: "email" },
-  { title: "Username", value: "username" },
-  { title: "Password", value: "password" },
-  { title: "Role", value: "role" },
+  { title: "Genre ID", value: "genreId" },
+  { title: "Title", value: "title" },
   { title: "Actions", value: "actions", sortable: false },
 ];
 
-onMounted(getUsers);
+onMounted(getGenres);
 
-function getUsers() {
-  userRep.get().then((response) => {
-    users.value = response.data;
-  });
+function getGenres() {
+  genreRep.get().then((response) => (genres.value = response.data));
 }
 
 function add() {
   isEditing.value = false;
-  record.value = createDefaultUser();
+  record.value = createDefaultGenre();
   dialog.value = true;
 }
 
-async function edit(userId: string) {
+async function edit(genreId: string) {
   isEditing.value = true;
-  record.value = await userRep
-    .getUser(userId)
+  record.value = await genreRep
+    .getGenre(genreId)
     .then((response) => response.data);
   dialog.value = true;
 }
 
-function remove(userId: string) {
-  userRep.delete(userId).then(getUsers);
+function remove(genreId: string) {
+  genreRep.delete(genreId).then(getGenres);
 }
 
 async function save() {
   try {
     if (isEditing.value) {
-      await userRep.put(record.value);
+      await genreRep.put(record.value);
     } else {
-      await userRep.post(record.value);
+      await genreRep.post(record.value);
     }
     dialog.value = false;
-    getUsers();
+    getGenres();
   } catch (error) {
     displayErrors(error);
   }
@@ -192,6 +165,6 @@ function displayErrors(data: any) {
 }
 
 function reset() {
-  getUsers();
+  getGenres();
 }
 </script>

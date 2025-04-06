@@ -1,4 +1,5 @@
-import { MovieCast } from "./MovieCast";
+import type { MovieCast } from "./MovieCast";
+
 
 export interface Role {
     roleId: number;

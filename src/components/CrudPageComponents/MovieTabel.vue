@@ -1,23 +1,23 @@
 <template>
   <v-sheet border rounded>
-    <v-data-table :headers="headers" :items="users">
+    <v-data-table :headers="headers" :items="movies">
       <template #top>
         <v-toolbar flat>
           <v-toolbar-title>
             <v-icon
               color="medium-emphasis"
-              icon="mdi-account-group"
+              icon="mdi-movie"
               size="x-small"
               start
             />
-            Users Table
+            Movies Table
           </v-toolbar-title>
           <v-spacer />
           <v-btn
             class="me-2"
             prepend-icon="mdi-plus"
             rounded="lg"
-            text="Add a User"
+            text="Add a Movie"
             border
             @click="add"
           />
@@ -30,13 +30,13 @@
             color="medium-emphasis"
             icon="mdi-pencil"
             size="small"
-            @click="edit(item.userId)"
+            @click="edit(item.movieId)"
           />
           <v-icon
             color="medium-emphasis"
             icon="mdi-delete"
             size="small"
-            @click="remove(item.userId)"
+            @click="remove(item.movieId)"
           />
         </div>
       </template>
@@ -56,26 +56,16 @@
 
   <v-dialog v-model="dialog" max-width="500">
     <v-card
-      :subtitle="isEditing ? 'Update User' : 'Create User'"
-      :title="isEditing ? 'Edit User' : 'Add User'"
+      :subtitle="isEditing ? 'Update Movie' : 'Create Movie'"
+      :title="isEditing ? 'Edit Movie' : 'Add Movie'"
     >
       <template #text>
         <v-row>
           <v-col cols="12" md="6">
-            <v-text-field v-model="record.email" label="Email" />
+            <v-text-field v-model="record.title" label="Title" />
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field v-model="record.username" label="Username" />
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="record.password" label="Password" />
-          </v-col>
-          <v-col cols="12" md="6">
-            <VSelect
-              v-model="record.role"
-              :items="availableRoles"
-              label="Role"
-            />
+            <v-date-input v-model="record.year" label="year" />
           </v-col>
         </v-row>
       </template>
@@ -107,73 +97,68 @@
 </template>
 
 <script setup lang="ts">
+import { VDateInput } from "vuetify/labs/components";
 import { ref, shallowRef, onMounted } from "vue";
 import RepositoryFactory from "@/api/RepositoryFactory";
-import { UserRole } from "@/enums/UserRole";
-import { createDefaultUser } from "@/models/user";
-import type { User } from "@/models/user";
-import { VSelect } from "vuetify/components";
-import type { UserRepository } from "@/api/Repositories/usersRepository";
+import { createDefaultMovie, type Movie } from "@/models/movie";
+import type { MovieRepository } from "@/api/Repositories/movieRepository";
 
 const alert = ref(false);
 const displayErrorsText = ref<string[]>([]);
-const users = ref<User[]>([]);
-const record = ref<User>(createDefaultUser());
+const movies = ref<Movie[]>([]);
+const record = ref<Movie>(createDefaultMovie());
 const dialog = shallowRef(false);
 const isEditing = shallowRef(false);
-const availableRoles = [
-  UserRole.UNKNOWN,
-  UserRole.ADMIN,
-  UserRole.NORMAL,
-  UserRole.REVIEWER,
-];
 
-const userRep = RepositoryFactory.get("user") as typeof UserRepository;
+const movieRep = RepositoryFactory.get("movie") as typeof MovieRepository;
 
 const headers = [
-  { title: "User ID", value: "userId" },
-  { title: "Email", value: "email" },
-  { title: "Username", value: "username" },
-  { title: "Password", value: "password" },
-  { title: "Role", value: "role" },
+  { title: "Movie ID", value: "movieId" },
+  { title: "Title", value: "title" },
+  {
+    title: "Year",
+    value: "year",
+  },
+  {
+    title: "Image URL",
+    value: "imageUrl",
+  },
   { title: "Actions", value: "actions", sortable: false },
 ];
 
-onMounted(getUsers);
+onMounted(getMovies);
 
-function getUsers() {
-  userRep.get().then((response) => {
-    users.value = response.data;
-  });
+function getMovies() {
+  movieRep.get().then((response) => (movies.value = response.data));
 }
 
 function add() {
   isEditing.value = false;
-  record.value = createDefaultUser();
+  record.value = createDefaultMovie();
   dialog.value = true;
 }
 
-async function edit(userId: string) {
+async function edit(movieId: string) {
   isEditing.value = true;
-  record.value = await userRep
-    .getUser(userId)
+  record.value = await movieRep
+    .getMovie(movieId)
     .then((response) => response.data);
   dialog.value = true;
 }
 
-function remove(userId: string) {
-  userRep.delete(userId).then(getUsers);
+function remove(movieId: string) {
+  movieRep.delete(movieId).then(getMovies);
 }
 
 async function save() {
   try {
     if (isEditing.value) {
-      await userRep.put(record.value);
+      await movieRep.put(record.value);
     } else {
-      await userRep.post(record.value);
+      await movieRep.post(record.value);
     }
     dialog.value = false;
-    getUsers();
+    getMovies();
   } catch (error) {
     displayErrors(error);
   }
@@ -181,9 +166,9 @@ async function save() {
 
 function displayErrors(data: any) {
   alert.value = true;
-  let erros = data.response.data;
-  for (let key in erros) {
-    displayErrorsText.value.push(erros[key]);
+  let errors = data.response.data;
+  for (let key in errors) {
+    displayErrorsText.value.push(errors[key]);
   }
   setTimeout(() => {
     alert.value = false;
@@ -192,6 +177,6 @@ function displayErrors(data: any) {
 }
 
 function reset() {
-  getUsers();
+  getMovies();
 }
 </script>
