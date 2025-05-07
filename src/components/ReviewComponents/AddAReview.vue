@@ -34,7 +34,12 @@
 </template>
 
 <script setup lang="ts">
+import { UserService } from "@/api/Services/userService";
+import ServicesFactory from "@/api/ServicesFactory";
 import { createDefaultReview, type Review } from "@/models/review";
+import type { ReviewRequest } from "@/models/reviewRequest";
+
+const emits = defineEmits(["submitted"]);
 
 const movieId = defineModel("movieId", {
   required: true,
@@ -47,7 +52,15 @@ function clearReview() {
   review.value = createDefaultReview();
 }
 
-function submitReview() {
-  //todo: submit review to the server
+async function submitReview() {
+  const username = localStorage.getItem("userName");
+  const reviewRequest: ReviewRequest = {
+    movieId: movieId.value,
+    rating: review.value.rating,
+    reviewText: review.value.comment ?? "",
+    username: username,
+  };
+
+  UserService.addAReview(reviewRequest).then(() => emits("submitted"));
 }
 </script>

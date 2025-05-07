@@ -5,7 +5,7 @@ import type { MovieCast } from "./MovieCast";
 export interface Movie {
     movieId: string;
     title: string;
-    year?: Date | null; 
+    releaseYear?: Date | null; 
     description?: string;
     genres: Genre[];
     movieCastList: MovieCast[];
@@ -16,7 +16,7 @@ export function createDefaultMovie(): Movie {
     return {
         movieId: "",
         title: "",
-        year: null,
+        releaseYear: null,
         genres: [],
         movieCastList: []
     };

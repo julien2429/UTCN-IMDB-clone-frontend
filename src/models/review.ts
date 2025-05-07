@@ -5,7 +5,7 @@ import type { MovieCast } from "./MovieCast";
 export interface Review {
     reviewId: string;
     rating: number;
-    comment?: string;
+    comment?: string | null;
 }
 
 export function createDefaultReview(): Review {

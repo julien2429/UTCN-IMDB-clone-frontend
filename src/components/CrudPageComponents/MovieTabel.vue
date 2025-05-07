@@ -65,7 +65,13 @@
             <v-text-field v-model="record.title" label="Title" />
           </v-col>
           <v-col cols="12" md="6">
-            <v-date-input v-model="record.year" label="year" />
+            <v-date-input v-model="record.releaseYear" label="year" />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="record.description" label="Description" />
+          </v-col>
+          <v-col cols="12" md="6">
+            <v-text-field v-model="record.imageUrl" label="Image URL" />
           </v-col>
         </v-row>
       </template>
@@ -115,9 +121,10 @@ const movieRep = RepositoryFactory.get("movie") as typeof MovieRepository;
 const headers = [
   { title: "Movie ID", value: "movieId" },
   { title: "Title", value: "title" },
+  { title: "Description", value: "description" },
   {
-    title: "Year",
-    value: "year",
+    title: "releaseYear",
+    value: "releaseYear",
   },
   {
     title: "Image URL",

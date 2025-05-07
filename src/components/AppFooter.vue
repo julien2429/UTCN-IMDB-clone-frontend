@@ -2,7 +2,7 @@
   <v-footer height="40" app>
     <v-btn :flat="true" text to="/" class="ml-2"> Home </v-btn>
 
-    <v-btn :flat="true" text to="/movies" class="ml-2"> Movies </v-btn>
+    <v-btn :flat="true" text to="/ShowMovies" class="ml-2"> Movies </v-btn>
 
     <v-btn
       v-if="authStore.isLoggedIn"
@@ -29,8 +29,6 @@ const isLoggedIn = ref(!!localStorage.getItem("userToken"));
 const authStore = useAuthStore();
 
 function logout() {
-  localStorage.removeItem("userName");
-  localStorage.removeItem("role");
   authStore.logout();
 }
 </script>

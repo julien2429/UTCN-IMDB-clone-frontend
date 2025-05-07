@@ -29,6 +29,11 @@
                 Don't have an account?
                 <router-link to="/RegisterPage">Register</router-link>
               </span>
+              <span class="text-center d-block">
+                <router-link to="/ForgotPasswordPage"
+                  >Forgot Password?</router-link
+                >
+              </span>
 
               <v-btn type="submit" color="primary" block class="mt-4">
                 Login
@@ -44,35 +49,52 @@
 <script setup lang="ts">
 import type { UserRepository } from "@/api/Repositories/usersRepository";
 import RepositoryFactory from "@/api/RepositoryFactory";
+import type { AuthService } from "@/api/Services/authService";
+import ServicesFactory from "@/api/ServicesFactory";
 import {
   createDefaultLoginRequest,
   type LoginRequest,
 } from "@/models/loginRequest";
 import type { LoginResponse } from "@/models/loginResponse";
 import { useAuthStore } from "@/stores/auth";
+import { jwtDecode } from "jwt-decode";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 import { ro } from "vuetify/locale";
 
+interface DecodedToken {
+  sub: string;
+  role: string;
+  exp: number;
+  iat: number;
+  aud: string;
+}
+
 const loginRequest = ref<LoginRequest>(createDefaultLoginRequest());
 const router = useRouter();
-const loginRepo = RepositoryFactory.get("user") as typeof UserRepository;
+const loginRepo = ServicesFactory.get("auth") as typeof AuthService;
 const toast = useToast();
-const authStore = useAuthStore(); // Assuming you have a Pinia store for authentication
+const authStore = useAuthStore();
 
 const handleLogin = () => {
   loginRepo
     .login(loginRequest.value)
     .then((response) => {
       const loginResponse = response.data as unknown as LoginResponse;
-      console.log(loginResponse);
-      // TODO : Save the token in local storage or a cookie
-      localStorage.setItem(
-        "userName",
-        JSON.stringify(loginRequest.value.username)
+
+      const token = loginResponse.token;
+
+      const decodedToken = jwtDecode<DecodedToken>(token);
+      const parsedRole = decodedToken.role.substring(
+        1,
+        decodedToken.role.length - 1
       );
-      localStorage.setItem("role", loginResponse.role);
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("userName", decodedToken.sub);
+      localStorage.setItem("role", parsedRole);
+
       authStore.login("tokenActivat");
     })
     .catch((error) => {

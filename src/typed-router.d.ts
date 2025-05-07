@@ -21,8 +21,10 @@ declare module 'vue-router/auto-routes' {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
     '/EditMoviePage': RouteRecordInfo<'/EditMoviePage', '/EditMoviePage', Record<never, never>, Record<never, never>>,
     '/forbidden': RouteRecordInfo<'/forbidden', '/forbidden', Record<never, never>, Record<never, never>>,
+    '/ForgotPasswordPage': RouteRecordInfo<'/ForgotPasswordPage', '/ForgotPasswordPage', Record<never, never>, Record<never, never>>,
     '/LoginPage': RouteRecordInfo<'/LoginPage', '/LoginPage', Record<never, never>, Record<never, never>>,
     '/Movie': RouteRecordInfo<'/Movie', '/Movie', Record<never, never>, Record<never, never>>,
+    '/NewPasswordPage': RouteRecordInfo<'/NewPasswordPage', '/NewPasswordPage', Record<never, never>, Record<never, never>>,
     '/RegisterPage': RouteRecordInfo<'/RegisterPage', '/RegisterPage', Record<never, never>, Record<never, never>>,
     '/ShowMovies': RouteRecordInfo<'/ShowMovies', '/ShowMovies', Record<never, never>, Record<never, never>>,
   }

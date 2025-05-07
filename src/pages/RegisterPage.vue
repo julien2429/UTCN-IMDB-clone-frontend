@@ -41,16 +41,20 @@
 </template>
 
 <script setup lang="ts">
+import { AuthRepository } from "@/api/Repositories/authRepository";
 import type { UserRepository } from "@/api/Repositories/usersRepository";
 import RepositoryFactory from "@/api/RepositoryFactory";
+import type { AuthService } from "@/api/Services/authService";
+import ServicesFactory from "@/api/ServicesFactory";
 import { UserRole } from "@/enums/UserRole";
 import type { User } from "@/models/user";
 import router from "@/router";
+import { useAuthStore } from "@/stores/auth";
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
-const loginRepo = RepositoryFactory.get("user") as typeof UserRepository;
 const toast = useToast();
 
+const loginRepo = ServicesFactory.get("auth") as typeof AuthService;
 const email = ref("");
 const username = ref("");
 const password = ref("");
@@ -65,7 +69,7 @@ function handleRegister() {
   };
 
   loginRepo
-    .post(newUser)
+    .register(newUser)
     .then((response) => {
       router.push("/LoginPage");
       toast.success("Registration complete", {

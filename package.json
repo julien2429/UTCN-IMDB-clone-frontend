@@ -18,6 +18,7 @@
     "axios": "^1.8.3",
     "core-js": "^3.37.1",
     "fs": "^0.0.1-security",
+    "jwt-decode": "^4.0.0",
     "roboto-fontface": "*",
     "vue": "^3.4.31",
     "vue-toastification": "^2.0.0-rc.5",

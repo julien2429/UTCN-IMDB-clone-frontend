@@ -2,7 +2,7 @@
   <VContainer>
     <VRow>
       <VCard class="w-100">
-        <VCardText class="d-flex py-2 w-100">
+        <VCardText class="d-flex py-2 pt-10 w-100">
           <VImg
             :height="500"
             :width="300"
@@ -51,7 +51,7 @@
     </VRow>
     <VRow class="d-flex py-2">
       <VCard class="w-100">
-        <AddAReview :movieId="movieId" />
+        <AddAReview :movieId="movieId" @submitted="fetchDetails" />
       </VCard>
     </VRow>
     <VRow class="d-flex py-2">
@@ -160,6 +160,10 @@ const dateString = computed(() => {
 });
 
 onMounted(() => {
+  fetchDetails();
+});
+
+function fetchDetails() {
   movie.value = createDefaultMovieDetails();
   if (movieId) {
     movieRepo.getMovieDetails(movieId).then((response) => {
@@ -172,7 +176,7 @@ onMounted(() => {
       }
     });
   }
-});
+}
 </script>
 
 <style scoped lang="scss">

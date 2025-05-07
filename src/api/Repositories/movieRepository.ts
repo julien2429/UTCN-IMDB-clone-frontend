@@ -23,7 +23,7 @@ export const MovieRepository = {
     },
 
     put(movie: Movie) {
-        return myApi.put<Movie>(`${url}/${movie.movieId}`, movie);
+        return myApi.post<Movie>(`${url}/${movie.movieId}`, movie);
     },
 
     addGerneToMovie(movie: Movie, genreIds: string[]) {

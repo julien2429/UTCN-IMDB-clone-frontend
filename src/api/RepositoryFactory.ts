@@ -11,12 +11,14 @@ const repositories: {
     genre: typeof GenreRepository, 
     movie: typeof MovieRepository, 
     person: typeof PersonRepository,
+
 } = {
     user: UserRepository, 
     s3: S3Repository,
     genre: GenreRepository,
     movie: MovieRepository,
-    person: PersonRepository
+    person: PersonRepository,
+
 };
 
 type RepositoryKeys = keyof typeof repositories;

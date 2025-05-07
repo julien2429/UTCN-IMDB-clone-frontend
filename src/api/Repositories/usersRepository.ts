@@ -1,6 +1,8 @@
 import type { LoginRequest } from './../../models/loginRequest';
 import type { User } from "@/models/user";
 import { myApi } from "../apiBase";
+import AddAReview from '@/components/ReviewComponents/AddAReview.vue';
+import type { ReviewRequest } from '@/models/reviewRequest';
 
 
 
@@ -29,6 +31,11 @@ export const UserRepository = {
 
     login: (loginRequest: LoginRequest) => {
         return myApi.post<User>(`${url}/login`, loginRequest);
+    },
+
+    AddAReview: (reviewRequest: ReviewRequest) =>
+    {
+        return myApi.post(`${url}/addReview`, reviewRequest);
     }
 
 };

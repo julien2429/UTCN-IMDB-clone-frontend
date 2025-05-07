@@ -14,17 +14,11 @@ const router = createRouter({
   routes: setupLayouts(routes),
 })
 
-// Function to check if the user is logged in
 const isAuthenticated = () => {
   return !!localStorage.getItem('userToken');
 };
 
-// Function to get the user's role (replace with your actual logic)
 const getUserRole = (): string | null => {
-  // This is a placeholder - in a real application, you would likely:
-  // 1. Decode the JWT token from localStorage (if you're using JWT).
-  // 2. Fetch the user's role from your backend based on the token.
-  // 3. Store the user's role in localStorage or a reactive store after login.
   const role = localStorage.getItem('role');
   if (role) {
     return role;
