@@ -54,6 +54,15 @@ import { ref } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 
+definePage({
+  name: "RegisterPage",
+  meta: {
+    title: "RegisterPage",
+    requiresAuth: false,
+    unathentificatedOnly: true,
+  },
+});
+
 const loginRepo = ServicesFactory.get("auth") as typeof AuthService;
 const email = ref("");
 const username = ref("");

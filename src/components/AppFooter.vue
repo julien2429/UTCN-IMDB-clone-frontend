@@ -1,8 +1,18 @@
 <template>
-  <v-footer height="40" app>
+  <v-app-bar height="40" app>
     <v-btn :flat="true" text to="/" class="ml-2"> Home </v-btn>
 
     <v-btn :flat="true" text to="/ShowMovies" class="ml-2"> Movies </v-btn>
+
+    <v-btn :flat="true" text to="/ShowLists" class="ml-2"> Lists </v-btn>
+
+    <v-btn :flat="true" text to="/ManageReviewsPage" class="ml-2">
+      Manage Reviews
+    </v-btn>
+
+    <v-btn :flat="true" text to="/ManageRoles" class="ml-2">
+      Manage Roles
+    </v-btn>
 
     <v-btn
       v-if="authStore.isLoggedIn"
@@ -16,7 +26,7 @@
     <v-btn v-else :flat="true" text to="/LoginPage" class="ml-auto mr-2">
       Login
     </v-btn>
-  </v-footer>
+  </v-app-bar>
 </template>
 
 <script setup lang="ts">

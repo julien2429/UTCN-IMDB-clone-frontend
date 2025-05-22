@@ -63,6 +63,15 @@ import { useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 import { ro } from "vuetify/locale";
 
+definePage({
+  name: "LoginPage",
+  meta: {
+    title: "LoginPage",
+    requiresAuth: false,
+    unathentificatedOnly: true,
+  },
+});
+
 interface DecodedToken {
   sub: string;
   role: string;
@@ -91,6 +100,7 @@ const handleLogin = () => {
         decodedToken.role.length - 1
       );
 
+      localStorage.setItem("userId", loginResponse.userId);
       localStorage.setItem("token", token);
       localStorage.setItem("userName", decodedToken.sub);
       localStorage.setItem("role", parsedRole);

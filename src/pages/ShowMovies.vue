@@ -118,7 +118,7 @@ onMounted(() => {
 function displayMovie(movie: Movie) {
   const movieId = movie.movieId;
   router.push({
-    name: "/Movie",
+    name: "Movie",
     query: { movieId },
   });
 }

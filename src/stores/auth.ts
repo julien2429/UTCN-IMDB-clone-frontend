@@ -33,6 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   function logout() {
     setToken(null);
+    localStorage.removeItem('userId');
     localStorage.removeItem("userName");
     localStorage.removeItem("role");
     localStorage.removeItem("token");

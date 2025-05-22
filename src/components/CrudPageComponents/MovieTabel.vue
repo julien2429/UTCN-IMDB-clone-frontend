@@ -71,7 +71,13 @@
             <v-text-field v-model="record.description" label="Description" />
           </v-col>
           <v-col cols="12" md="6">
-            <v-text-field v-model="record.imageUrl" label="Image URL" />
+            <v-file-input
+              v-if="isEditing"
+              v-model:model-value="fileToUpload"
+              label="Image URL"
+              accept="image/*"
+              show-size
+            ></v-file-input>
           </v-col>
         </v-row>
       </template>
@@ -81,6 +87,7 @@
       <v-card-actions class="bg-surface-light">
         <v-btn text="Cancel" variant="plain" @click="dialog = false" />
         <v-spacer />
+        <v-btn v-if="isEditing" text="ChangeImage" @click="changeImage" />
         <v-btn text="Save" @click="save" />
       </v-card-actions>
     </v-card>
@@ -108,6 +115,7 @@ import { ref, shallowRef, onMounted } from "vue";
 import RepositoryFactory from "@/api/RepositoryFactory";
 import { createDefaultMovie, type Movie } from "@/models/movie";
 import type { MovieRepository } from "@/api/Repositories/movieRepository";
+import { S3Repository } from "@/api/Repositories/S3Repository";
 
 const alert = ref(false);
 const displayErrorsText = ref<string[]>([]);
@@ -115,6 +123,8 @@ const movies = ref<Movie[]>([]);
 const record = ref<Movie>(createDefaultMovie());
 const dialog = shallowRef(false);
 const isEditing = shallowRef(false);
+
+const fileToUpload = ref<File>();
 
 const movieRep = RepositoryFactory.get("movie") as typeof MovieRepository;
 
@@ -155,6 +165,17 @@ async function edit(movieId: string) {
 
 function remove(movieId: string) {
   movieRep.delete(movieId).then(getMovies);
+}
+
+async function changeImage() {
+  if (fileToUpload.value) {
+    try {
+      await S3Repository.changeImage(record.value.movieId, fileToUpload.value);
+      getMovies();
+    } catch (error) {
+      displayErrors(error);
+    }
+  }
 }
 
 async function save() {

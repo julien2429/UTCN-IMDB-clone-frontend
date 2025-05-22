@@ -25,8 +25,8 @@ const imageUrl = ref<string | null>(null);
 
 onMounted(async () => {
   if (movie.value.imageUrl)
-    // imageUrl.value = await s3Repo.getImageUrl(movie.value.imageUrl);
-    console.log(imageUrl.value);
+    imageUrl.value = await s3Repo.getImageUrl(movie.value.imageUrl);
+  console.log(imageUrl.value);
 });
 </script>
 

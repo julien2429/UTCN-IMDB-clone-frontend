@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActorAndRoleList: typeof import('./components/MoviePage/ActorAndRoleList.vue')['default']
     AddAReview: typeof import('./components/ReviewComponents/AddAReview.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     CommentCard: typeof import('./components/CommentComponents/CommentCard.vue')['default']
@@ -16,11 +17,13 @@ declare module 'vue' {
     GenreTabel: typeof import('./components/CrudPageComponents/GenreTabel.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     ImageTest: typeof import('./pages/ImageTest.vue')['default']
+    ListCard: typeof import('./components/ShowListComponents/ListCard.vue')['default']
     MovieCard: typeof import('./components/MovieCard.vue')['default']
     MoviesPage: typeof import('./pages/ShowMovies.vue')['default']
     MovieTabel: typeof import('./components/CrudPageComponents/MovieTabel.vue')['default']
     PersonTabel: typeof import('./components/CrudPageComponents/PersonTabel.vue')['default']
     ReviewCard: typeof import('./components/ReviewComponents/ReviewCard.vue')['default']
+    ReviewStats: typeof import('./components/MoviePage/ReviewStats.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectMovie: typeof import('./components/MoviePage/SelectMovie.vue')['default']

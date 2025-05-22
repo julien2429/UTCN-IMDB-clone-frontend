@@ -8,6 +8,7 @@
 import { createRouter, createWebHistory } from 'vue-router/auto'
 import { setupLayouts } from 'virtual:generated-layouts'
 import { routes } from 'vue-router/auto-routes'
+import { ro } from 'vuetify/locale';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,8 +27,63 @@ const getUserRole = (): string | null => {
   return null;
 };
 
+/**
+ * Utility function to check if the current route requires authentication or specific roles.
+ */
+export const checkCurrentRouteAccess = () => {
+  console.log(router.currentRoute.value, isAuthenticated(), getUserRole());
+  const currentRoute = router.currentRoute.value;
+  console.log(currentRoute.meta.unathentificatedOnly);
+  if (currentRoute.meta.unathentificatedOnly && isAuthenticated()) {
+    
+    router.replace('/ShowMovies');
+    return false;
+  }
+  if (currentRoute.meta.requiresAuth) {
+    if (!isAuthenticated()) {
+      // Redirect unauthenticated users to login
+      router.replace('/LoginPage');
+      return false;
+    }
+    if (
+      currentRoute.meta.requiredRoles &&
+      Array.isArray(currentRoute.meta.requiredRoles) &&
+      currentRoute.meta.requiredRoles.length > 0
+    ) {
+      const userRole = getUserRole();
+      if (!userRole || !currentRoute.meta.requiredRoles.includes(userRole)) {
+        // Redirect users without required role
+        router.replace('/forbidden');
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
+
+/**
+ * Ensure route access is checked even when the page is loaded directly (e.g., via URL change or refresh).
+ * This can be done by calling checkCurrentRouteAccess() after the router is ready.
+ */
+router.isReady().then(() => {
+  checkCurrentRouteAccess();
+  localStorage.removeItem('vuetify:dynamic-reload');
+});
+
 router.beforeEach((to, from, next) => {
   // Check if the route requires authentication
+  if (to.meta.unathentificatedOnly) {
+    if (isAuthenticated()) {
+      // User is already authenticated, redirect to home or another page
+      console.warn(`User is already authenticated, redirecting from "${to.fullPath}"`);
+      next('/ShowMovies'); // Or next('/ShowMovies');
+    } else {
+      // User is not authenticated, proceed
+      next();
+    }
+  }
+
   if (to.meta.requiresAuth) {
     if (isAuthenticated()) {
       // Check if the route requires specific roles

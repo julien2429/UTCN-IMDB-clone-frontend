@@ -34,6 +34,7 @@ import { VDateInput } from "vuetify/labs/components";
 import { ref, shallowRef, onMounted } from "vue";
 import RepositoryFactory from "@/api/RepositoryFactory";
 import { createDefaultMovie, type Movie } from "@/models/movie";
+import type { MovieRepository } from "@/api/Repositories/movieRepository";
 
 const selectedMovie = defineModel<Movie | null>("selectedMovie", {
   default: [],
@@ -42,7 +43,7 @@ const alert = ref(false);
 const displayErrorsText = ref<string[]>([]);
 const movies = ref<Movie[]>([]);
 
-const movieRep = RepositoryFactory.getMovieRepository();
+const movieRep = RepositoryFactory.get("movie") as typeof MovieRepository;
 
 const headers = [
   { title: "Movie ID", value: "movieId" },

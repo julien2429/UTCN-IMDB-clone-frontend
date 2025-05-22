@@ -1,5 +1,6 @@
 
 import AWS from "aws-sdk";
+import { myApi } from "../apiBase";
 
 let REGION = import.meta.env.VITE_AWS_REGION;
 let BUCKET_NAME = import.meta.env.VITE_AWS_BUCKET_NAME;
@@ -28,5 +29,17 @@ export const S3Repository = {
                 }
             });
         });
+    },
+    changeImage(movieId: string, file: File) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        return myApi.post<string>(`/movie/uploadImage/${movieId}`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
     }
+
+
 }
