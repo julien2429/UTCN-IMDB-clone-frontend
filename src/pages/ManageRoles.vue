@@ -73,6 +73,32 @@
           </VCardText>
         </VCard>
       </VCol>
+
+      <VCol cols="12" md="6">
+        <VCard>
+          <VCardTitle>Edit Genres</VCardTitle>
+          <VCardText>
+            <VSelect
+              v-model="selectedGenres"
+              :items="genres"
+              item-title="title"
+              item-value="genreId"
+              label="Select Genres"
+              multiple
+              return-object
+              chips
+            />
+            <VBtn
+              color="primary"
+              class="mt-2"
+              :disabled="!selectedMovieId || selectedGenres.length === 0"
+              @click="modifyGenres"
+            >
+              Save Genres
+            </VBtn>
+          </VCardText>
+        </VCard>
+      </VCol>
     </VRow>
   </VContainer>
 </template>
@@ -84,10 +110,13 @@ import type { PersonRepository } from "@/api/Repositories/personRepository";
 import type { MovieDetails } from "@/models/movieDetails";
 import type { Person } from "@/models/person";
 import type { MovieCastResponse } from "@/models/MovieCastResponse";
+import type { Genre } from "@/models/genre";
+import type { GenreRepository } from "@/api/Repositories/genreRepository";
 
 const movieRepo = RepositoryFactory.get("movie") as typeof MovieRepository;
 const actorRepo = RepositoryFactory.get("person") as typeof PersonRepository;
 const personRepo = RepositoryFactory.get("person") as typeof PersonRepository;
+const genreRepo = RepositoryFactory.get("genre") as typeof GenreRepository;
 
 const movies = ref<MovieDetails[]>([]);
 const actors = ref<Person[]>([]);
@@ -96,12 +125,16 @@ const selectedMovieRoles = ref<MovieCastResponse[] | null>(null);
 
 const selectedActor = ref<Person | null>(null);
 const roleName = ref<string | null>(null);
+const genres = ref<Genre[]>([]);
+const selectedGenres = ref<Genre[]>([]);
 
 onMounted(async () => {
   const movieRes = await movieRepo.get();
   movies.value = movieRes.data;
   const actorRes = await personRepo.get();
   actors.value = actorRes.data;
+  const genreRes = await genreRepo.get();
+  genres.value = genreRes.data;
 });
 
 watch(
@@ -116,8 +149,16 @@ async function onMovieSelect() {
     selectedMovieRoles.value = null;
     return;
   }
+
+  selectedGenres.value = await movieRepo
+    .getGenresByMovie(selectedMovieId.value)
+    .then((res) => res.data);
+
   const res = await movieRepo.getRoles(selectedMovieId.value);
   selectedMovieRoles.value = res.data;
+
+  console.log(selectedGenres.value);
+  console.log(genres.value);
 }
 
 async function updateRole(role: any) {
@@ -150,5 +191,16 @@ async function addRole() {
   selectedActor.value = null;
   roleName.value = "";
   await onMovieSelect();
+}
+
+async function modifyGenres() {
+  if (!selectedMovieId.value) return;
+
+  const genreUUIDs = selectedGenres.value.map((genre) => genre.genreId);
+
+  const res = await movieRepo.addGerneToMovie(
+    selectedMovieId.value,
+    genreUUIDs
+  );
 }
 </script>

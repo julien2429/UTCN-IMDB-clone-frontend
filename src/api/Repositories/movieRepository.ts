@@ -4,6 +4,7 @@ import type { MovieDetails } from "@/models/movieDetails";
 import type { MovieFilters } from "@/models/movieFilters";
 import type { Review } from "@/models/review";
 import type { MovieCastResponse } from "@/models/MovieCastResponse";
+import type { Genre } from "@/models/genre";
 
 const url = '/movie';
 export const MovieRepository = {
@@ -28,8 +29,8 @@ export const MovieRepository = {
         return myApi.post<Movie>(`${url}/${movie.movieId}`, movie);
     },
 
-    addGerneToMovie(movie: Movie, genreIds: string[]) {
-        return myApi.put<Movie>(`${url}/addGenre/${movie.movieId}`, genreIds);
+    addGerneToMovie(movieUUID: string , genreIds: string[]) {
+        return myApi.post<Movie>(`${url}/addGenre/${movieUUID}`, genreIds);
     },
 
     delete(movieId: string) {
@@ -79,4 +80,9 @@ export const MovieRepository = {
     editRoleInMovie(movieCastUUID: string, roleTitle: string) {
         return myApi.post<MovieCastResponse>(`${url}/editRole/${movieCastUUID}/${roleTitle}`);
     },
+
+    getGenresByMovie(movieUUID: string) {
+        return myApi.get<Genre[]>(`${url}/getGenresByMovie/${movieUUID}`);
+    },
+
 }

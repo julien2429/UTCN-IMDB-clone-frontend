@@ -1,16 +1,22 @@
 <template>
   <v-app-bar height="40" app>
-    <v-btn :flat="true" text to="/" class="ml-2"> Home </v-btn>
+    <v-btn :flat="true" text to="/" class="ml-2" v-if="isAdmin"> Home </v-btn>
 
     <v-btn :flat="true" text to="/ShowMovies" class="ml-2"> Movies </v-btn>
 
     <v-btn :flat="true" text to="/ShowLists" class="ml-2"> Lists </v-btn>
 
-    <v-btn :flat="true" text to="/ManageReviewsPage" class="ml-2">
+    <v-btn
+      :flat="true"
+      text
+      to="/ManageReviewsPage"
+      class="ml-2"
+      v-if="isAdmin"
+    >
       Manage Reviews
     </v-btn>
 
-    <v-btn :flat="true" text to="/ManageRoles" class="ml-2">
+    <v-btn :flat="true" text to="/ManageRoles" class="ml-2" v-if="isAdmin">
       Manage Roles
     </v-btn>
 
@@ -37,6 +43,14 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 const isLoggedIn = ref(!!localStorage.getItem("userToken"));
 const authStore = useAuthStore();
+const isAdmin = ref(false);
+
+watch(
+  () => authStore.isLoggedIn,
+  (newValue) => {
+    isAdmin.value = localStorage.getItem("role") === "ADMIN";
+  }
+);
 
 function logout() {
   authStore.logout();
